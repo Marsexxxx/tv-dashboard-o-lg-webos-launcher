@@ -8,20 +8,12 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     hmr: {
-      clientPort: 443 // Evita bucles de recarga en GitHub Codespaces
+      clientPort: 443
     }
   },
   build: {
-    target: 'es2020', // Compatible con el motor Chromium de LG webOS
-    minify: 'esbuild',
-    sourcemap: false, // Ahorra memoria RAM en la TV
-    cssCodeSplit: false, // Un único archivo CSS carga más rápido al iniciar el launcher
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom']
-        }
-      }
-    }
+    target: 'es2020',
+    sourcemap: false,
+    cssCodeSplit: false
   }
 })
