@@ -1,0 +1,22 @@
+{
+  "id": "com.jesus.weboslauncher",
+  "version": "1.0.0",
+  "vendor": "Jesus Studio",
+  "type": "web",
+  "main": "index.html",
+  "title": "Mi Launcher TV",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "resolution": "1920x1080",
+  "bgColor": "#0b112c",
+  "iconColor": "#0b112c",
+  "disableBackHistoryAPI": true,
+  "handlesRelaunch": false,
+  "transparent": false,
+  "requiredPermissions": [
+    "time.query",
+    "activity.operation",
+    "application.launcher",
+    "application.operation"
+  ]
+}
