@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-export function useSpatialNav(rows, onSelectItem) {
+export function useSpatialNav(rows, onSelectItem, onEdgeHorizontal) {
   const [focusCoords, setFocusCoords] = useState({ row: 0, col: 0 });
 
   const handleKeyDown = useCallback(
@@ -21,7 +21,7 @@ export function useSpatialNav(rows, onSelectItem) {
       if (isUp) {
         setFocusCoords((prev) => {
           const nextRow = Math.max(0, prev.row - 1);
-          const maxColInNextRow = rows[nextRow].items.length - 1;
+          const maxColInNextRow = Math.max(0, (rows[nextRow]?.items?.length || 1) - 1);
           return {
             row: nextRow,
             col: Math.min(prev.col, maxColInNextRow),
@@ -30,20 +30,30 @@ export function useSpatialNav(rows, onSelectItem) {
       } else if (isDown) {
         setFocusCoords((prev) => {
           const nextRow = Math.min(rows.length - 1, prev.row + 1);
-          const maxColInNextRow = rows[nextRow].items.length - 1;
+          const maxColInNextRow = Math.max(0, (rows[nextRow]?.items?.length || 1) - 1);
           return {
             row: nextRow,
             col: Math.min(prev.col, maxColInNextRow),
           };
         });
       } else if (isLeft) {
-        setFocusCoords((prev) => ({
-          ...prev,
-          col: Math.max(0, prev.col - 1),
-        }));
+        setFocusCoords((prev) => {
+          if (prev.col === 0 && onEdgeHorizontal) {
+            const handled = onEdgeHorizontal('left', prev.row);
+            if (handled) return { ...prev, col: 2 };
+          }
+          return {
+            ...prev,
+            col: Math.max(0, prev.col - 1),
+          };
+        });
       } else if (isRight) {
         setFocusCoords((prev) => {
-          const maxCol = rows[prev.row].items.length - 1;
+          const maxCol = Math.max(0, (rows[prev.row]?.items?.length || 1) - 1);
+          if (prev.col === maxCol && onEdgeHorizontal) {
+            const handled = onEdgeHorizontal('right', prev.row);
+            if (handled) return { ...prev, col: 0 };
+          }
           return {
             ...prev,
             col: Math.min(maxCol, prev.col + 1),
@@ -58,7 +68,7 @@ export function useSpatialNav(rows, onSelectItem) {
         setFocusCoords({ row: 0, col: 0 });
       }
     },
-    [rows, focusCoords, onSelectItem]
+    [rows, focusCoords, onSelectItem, onEdgeHorizontal]
   );
 
   useEffect(() => {
